@@ -1,0 +1,471 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package telas;
+
+import javax.swing.JOptionPane;
+import br.com.biblisis.controller.*;
+import java.sql.SQLException;
+
+
+/**
+ *
+ * @author romeu
+ */
+public class TelaLogin extends javax.swing.JFrame {
+
+    /**
+     * Creates new form TelaLogin
+     */
+    private String tipoDoUsuario;
+    private String login;
+    
+    
+    public TelaLogin() {
+        initComponents();
+        this.tipoDoUsuario = "Aluno/Professor";
+    }
+    
+    public void setTipoDoUsuario(String tipoDoUsuario){
+        this.tipoDoUsuario = tipoDoUsuario;
+    }
+    private void verificaLoginAdministradorFuncionario(){
+        if(this.tipoDoUsuario.equals("Administrador") || this.tipoDoUsuario.equals("Funcionário") ){
+           btnNovoCadastro.setVisible(false);
+        }
+    }
+    
+    private void chamaMenu(){
+        if (this.tipoDoUsuario.equals("Administrador")){
+            TelaAdministrador telaAdministrador = new TelaAdministrador();
+            telaAdministrador.setLogin(this.login);
+            telaAdministrador.setVisible(true);
+            telaAdministrador.setExtendedState(MAXIMIZED_BOTH);
+            dispose();
+        }else if(this.tipoDoUsuario.equals("Aluno/Professor")){
+            TelaAlunoProfessor telaAlunoProfessor = new TelaAlunoProfessor();
+            telaAlunoProfessor.setLogin(this.login);
+            telaAlunoProfessor.setVisible(true);
+            telaAlunoProfessor.setExtendedState(MAXIMIZED_BOTH);
+            dispose();
+        }else{
+            TelaFuncionario telaFuncionario = new TelaFuncionario();
+            telaFuncionario.setLogin(this.login);
+            telaFuncionario.setVisible(true);
+            telaFuncionario.setExtendedState(MAXIMIZED_BOTH);
+            dispose();
+           ;
+        }
+    }
+    
+    private void chamaTelaDeNovoCadastro (String tipo){
+        TelaCadastroUsuario novaTelaDeCadastro = new TelaCadastroUsuario ();
+        novaTelaDeCadastro.setTipoDoUsuario(tipo);
+        novaTelaDeCadastro.setVisible(true);
+    }
+    
+    private boolean validaLogin (String loginId, String senha){
+        boolean resposta = false;
+        if (this.tipoDoUsuario.equals("Funcionário")){
+            try {
+               resposta = CFuncionario.login(loginId, senha, 0);
+            }catch (SQLException e) {
+                System.out.println("Erro!" + e);
+            }
+        } else if (this.tipoDoUsuario.equals("Administrador")){
+            try {
+                resposta = CFuncionario.login(loginId, senha, 1);
+            }catch (SQLException e) {
+                System.out.println("Erro!" + e);
+            }
+        }else{
+            try {
+               resposta =  CAlunoProfessor.login(loginId, senha);
+            }catch (SQLException e) {
+                System.out.println("Erro!" + e);
+            }
+        }
+        return resposta;
+    }
+    
+    
+    private boolean validaCaseLogin (String loginId, String senha){
+        boolean resposta = false;
+        String [] usuario = null;
+        if (this.tipoDoUsuario.equals("Funcionário")){
+            try {
+               resposta = CFuncionario.login(loginId, senha, 0);
+            }catch (SQLException e) {
+                System.out.println("Erro!" + e);
+            }
+            
+            try {
+               usuario = CFuncionario.search(loginId);
+            }catch (SQLException e) {
+                System.out.println("Erro!" + e);
+            }
+            if ( usuario == null || !usuario[0].equals(loginId)){
+                resposta = false;
+            }
+            
+            
+        } else if (this.tipoDoUsuario.equals("Administrador")){
+            try {
+                resposta = CFuncionario.login(loginId, senha, 1);
+            }catch (SQLException e) {
+                System.out.println("Erro!" + e);
+            }
+            
+            try {
+               usuario = CFuncionario.search(loginId);
+            }catch (SQLException e) {
+                System.out.println("Erro!" + e);
+            }
+            if ( usuario == null || !usuario[0].equals(loginId)){
+                resposta = false;
+            }
+        }else{
+            try {
+               resposta =  CAlunoProfessor.login(loginId, senha);
+            }catch (SQLException e) {
+                System.out.println("Erro!" + e);
+            }
+            try {
+               usuario = CAlunoProfessor.search(loginId);
+            }catch (SQLException e) {
+                System.out.println("Erro!" + e);
+            }
+            if ( usuario == null || !usuario[0].equals(loginId)){
+                resposta = false;
+            }
+        }
+        return resposta;
+     
+    }
+    
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        btnEntrar = new javax.swing.JButton();
+        btnNovoCadastro = new javax.swing.JButton();
+        campoPassSenha = new javax.swing.JPasswordField();
+        btnRetornar = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        lblAviso = new javax.swing.JLabel();
+        lblTipo = new javax.swing.JLabel();
+        campoTextoId = new javax.swing.JFormattedTextField();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Autenticação");
+        setBounds(new java.awt.Rectangle(0, 0, 0, 0));
+        setFocusCycleRoot(false);
+        setFocusTraversalPolicyProvider(true);
+        setUndecorated(true);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                formKeyTyped(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
+        jLabel1.setText("LOGIN");
+        jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel2.setText("ID");
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel3.setText("SENHA");
+
+        btnEntrar.setText("Entrar");
+        btnEntrar.setToolTipText("prosseguir com login");
+        btnEntrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEntrarActionPerformed(evt);
+            }
+        });
+
+        btnNovoCadastro.setText("Novo Cadastro");
+        btnNovoCadastro.setToolTipText("ainda não é cadastrado?");
+        btnNovoCadastro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoCadastroActionPerformed(evt);
+            }
+        });
+
+        campoPassSenha.setToolTipText("digite sua senha");
+        campoPassSenha.setPreferredSize(new java.awt.Dimension(40, 23));
+        campoPassSenha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                campoPassSenhaKeyPressed(evt);
+            }
+        });
+
+        btnRetornar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/icons8-left-32.png"))); // NOI18N
+        btnRetornar.setToolTipText("retornar ao menu principal");
+        btnRetornar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRetornarActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/icons8-reading-filled-100.png"))); // NOI18N
+
+        lblAviso.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblAviso.setForeground(new java.awt.Color(255, 0, 0));
+        lblAviso.setText("Senha incorreta ou usuário inexistente!");
+        lblAviso.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        lblTipo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblTipo.setText("Tipo do Usuário");
+        lblTipo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        campoTextoId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                campoTextoIdActionPerformed(evt);
+            }
+        });
+        campoTextoId.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                campoTextoIdKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                campoTextoIdKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                campoTextoIdKeyTyped(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblAviso)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(campoPassSenha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(campoTextoId, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnNovoCadastro)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(btnRetornar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTipo))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(127, 127, 127)
+                .addComponent(jLabel1)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(105, 105, 105)
+                .addComponent(jLabel5)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 300, Short.MAX_VALUE)
+                        .addComponent(jLabel4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel5)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(campoTextoId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(campoPassSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblAviso)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnEntrar)
+                            .addComponent(btnNovoCadastro))))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnRetornar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTipo)))
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnNovoCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoCadastroActionPerformed
+       
+      Object[] itens = { "Aluno", "Professor"};
+      Object tipoEscolhido = JOptionPane.showInputDialog(null, "Qual o tipo do usuário?", "Novo usuário",
+              JOptionPane.INFORMATION_MESSAGE, null,
+                  itens, itens [0]); //
+      if (tipoEscolhido != null){
+          chamaTelaDeNovoCadastro (tipoEscolhido.toString());
+      }
+    }//GEN-LAST:event_btnNovoCadastroActionPerformed
+
+    private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
+        boolean respostaDaValidacao;
+        respostaDaValidacao = validaCaseLogin(campoTextoId.getText(),campoPassSenha.getText());
+        
+        if (respostaDaValidacao){
+            dispose ();
+            this.login = campoTextoId.getText();
+            chamaMenu();
+        }
+        lblAviso.setVisible(true); 
+    }//GEN-LAST:event_btnEntrarActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        verificaLoginAdministradorFuncionario();
+        lblAviso.setVisible(false);
+        lblTipo.setText(tipoDoUsuario);
+    }//GEN-LAST:event_formWindowOpened
+
+    private void btnRetornarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetornarActionPerformed
+        this.dispose();
+        TelaPrincipal novaTelaPrincipal = new TelaPrincipal();
+        novaTelaPrincipal.setVisible(true);
+    }//GEN-LAST:event_btnRetornarActionPerformed
+
+    private void campoTextoIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_campoTextoIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_campoTextoIdActionPerformed
+
+    private void campoTextoIdKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campoTextoIdKeyTyped
+        
+    }//GEN-LAST:event_campoTextoIdKeyTyped
+
+    private void formKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyTyped
+        campoTextoId.setText(campoTextoId.getText().toUpperCase());
+    }//GEN-LAST:event_formKeyTyped
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        campoTextoId.setText(campoTextoId.getText().toUpperCase());
+        
+    }//GEN-LAST:event_formKeyPressed
+
+    private void campoTextoIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campoTextoIdKeyReleased
+        //campoTextoId.setText(campoTextoId.getText().toUpperCase());
+    }//GEN-LAST:event_campoTextoIdKeyReleased
+
+    private void campoPassSenhaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campoPassSenhaKeyPressed
+        if(evt.getKeyCode() == evt.VK_ENTER){
+            boolean respostaDaValidacao;
+        respostaDaValidacao = validaCaseLogin(campoTextoId.getText(),campoPassSenha.getText());
+        
+        if (respostaDaValidacao){
+            this.login = campoTextoId.getText();
+            chamaMenu();
+        }
+        lblAviso.setVisible(true); 
+        }
+    }//GEN-LAST:event_campoPassSenhaKeyPressed
+
+    private void campoTextoIdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campoTextoIdKeyPressed
+        if(evt.getKeyCode() == evt.VK_ENTER){
+            boolean respostaDaValidacao;
+        respostaDaValidacao = validaCaseLogin(campoTextoId.getText(),campoPassSenha.getText());
+        
+        if (respostaDaValidacao){
+            this.login = campoTextoId.getText();
+            chamaMenu();
+        }
+        lblAviso.setVisible(true); 
+        }
+    }//GEN-LAST:event_campoTextoIdKeyPressed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(TelaLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new TelaLogin().setVisible(true);
+                
+            }
+        });
+        
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEntrar;
+    private javax.swing.JButton btnNovoCadastro;
+    private javax.swing.JButton btnRetornar;
+    private javax.swing.JPasswordField campoPassSenha;
+    private javax.swing.JFormattedTextField campoTextoId;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel lblAviso;
+    private javax.swing.JLabel lblTipo;
+    // End of variables declaration//GEN-END:variables
+}
